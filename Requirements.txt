@@ -1,0 +1,13 @@
+langchain
+langgraph
+langsmith
+faiss-cpu 
+huggingface_hub 
+langchain_huggingface 
+langchain_community
+pydantic
+python-dotenv
+pypdf
+langgraph-checkpoint-sqlite
+
+streamlit 
