@@ -59,11 +59,11 @@ def unified_chunking(text, source="Unknown", lang="en", chunk_size=1000, chunk_o
             "text": f"Header: General Section\nBody: {c}",
             "metadata": {"source": source, "header": "General Section"}
         })
-    return 
+    return chunks
 
-from load_pdf import load_pdf
+from load_pdf import load_pdf_directory
 def chunking():
-  constitution_data, Right_and_law_data = load_pdf()
+  constitution_data, Right_and_law_data = load_pdf_directory()
   c_chunk = []
   for doc in constitution_data:
     c_chunk.extend(unified_chunking(doc.page_content, source="constitution"))
@@ -71,4 +71,10 @@ def chunking():
   r_chunk = []
   for doc in Right_and_law_data:
     r_chunk.extend(unified_chunking(doc.page_content, source="Right and law"))
+  print(f"Total constitution chunks: {len(c_chunk)}")
   return c_chunk,r_chunk
+
+if __name__ == "__main__":
+  c_chunk,r_chunk = chunking()
+  print(len(c_chunk))
+  print(len(r_chunk))

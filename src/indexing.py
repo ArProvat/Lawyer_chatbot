@@ -1,4 +1,4 @@
-from langchain.vectorstores import FAISS
+from langchain_community.vectorstores import FAISS
 from langchain.schema import Document
 from chunking import chunking
 from model import embedding_model
@@ -12,3 +12,8 @@ def indexing():
 
   constitution_db.save_local("constitution_db")
   Right_and_law_db.save_local("Right_and_law_db")
+  
+  
+if __name__ == "__main__":
+    indexing()
+    print("Indexing completed and saved locally.")
