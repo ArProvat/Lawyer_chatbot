@@ -5,9 +5,12 @@ faiss-cpu
 huggingface_hub 
 langchain_huggingface 
 langchain_community
+sentence-transformers
 pydantic
 python-dotenv
 pypdf
 langgraph-checkpoint-sqlite
-
+ipython
 streamlit 
+joblib
+PIL

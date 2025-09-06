@@ -2,7 +2,7 @@ from langchain.retrievers import EnsembleRetriever
 from langchain.retrievers.document_compressors import CrossEncoderReranker
 from langchain.retrievers import ContextualCompressionRetriever
 from langchain_community.cross_encoders import HuggingFaceCrossEncoder
-from langchain.vectorstores import FAISS
+from langchain_community.vectorstores import FAISS
 from indexing import indexing
 from model import embedding_model
 import os
