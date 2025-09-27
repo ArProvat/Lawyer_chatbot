@@ -1,6 +1,6 @@
 import sqlite3
 from langgraph.checkpoint.sqlite import SqliteSaver
-from relevence_query_check import relevence_query_check 
+from relevence_query_check import relevance_query_check 
 from Retrieval import Retrieveal
 from check_relevent_document import check_relevence_document
 from llm_response import LLm_response
@@ -12,28 +12,28 @@ from langchain_core.messages import BaseMessage
 from langgraph.graph.message import add_messages
 
 
-class chatSate(TypedDict):
+class ChatSate(TypedDict):
     chat_history:Annotated[list[BaseMessage],add_messages]
     answer: BaseMessage
-    is_relevence_query:str
+    is_relevance_query:str
     is_relevent_document:str
     docs:List[str]
 
-Graph = StateGraph(state_schema=chatSate)
+Graph = StateGraph(state_schema=ChatSate)
 
 
 
-Graph.add_node("relevet_query_check",relevence_query_check)
+Graph.add_node("relevance_query_check",relevance_query_check)
 Graph.add_node("Retrieveal",Retrieveal)
 Graph.add_node("check_relevence_document",check_relevence_document)
 Graph.add_node("LLm_response",LLm_response)
 Graph.add_node("response_irrelevent_Question",response_irrelevent_Question)
 
 
-Graph.add_edge(START, "relevet_query_check")
+Graph.add_edge(START, "relevance_query_check")
 Graph.add_conditional_edges(
-    "relevet_query_check",
-    lambda X: X['is_relevence_query'].strip().lower(),
+    "relevance_query_check",
+    lambda X: X['is_relevance_query'].strip().lower(),
     {
         "relevant": "Retrieveal",
         "memory": "LLm_response",
@@ -53,23 +53,16 @@ checkpointer = SqliteSaver(conn)
 Workflow =Graph.compile(checkpointer=checkpointer)
 
 
-from langchain_core.messages import HumanMessage
-config = {'configurable': {'thread_id': 'thread-4'}}
+def retrieve_all_threads():
+  thread_list=set()
+  for checkpoint in checkpointer.list(None):
+    thread_list.add(checkpoint.config['configurable']['thread_id'])
+  return list(thread_list)
 
-response = Workflow.invoke(
-    {'chat_history': [HumanMessage(content='when Speaker to act as President')]},
-    config=config
-)
-print(response['answer'].content)
-
-from PIL import Image
-import io
-
-# Assuming Workflow.get_graph().draw_mermaid_png() returns the raw image data (e.g., bytes)
-image_data = Workflow.get_graph().draw_mermaid_png()
-
-# Create a PIL Image object from the raw image data
-img = Image.open(io.BytesIO(image_data))
-
-# Save the image to a file
-img.save("workflow_graph.png")
+def retrieve_all_threads_with_titles():
+    conn = sqlite3.connect("chat_history.db")
+    cursor = conn.cursor()
+    cursor.execute("SELECT thread_id, title FROM chat_titles")
+    threads = {row[0]: row[1] for row in cursor.fetchall()}
+    conn.close()
+    return threads

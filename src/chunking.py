@@ -1,7 +1,7 @@
 
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 import re
-
+from load_pdf import load_pdf_directory
 def unified_chunking(text, source="Unknown", lang="en", chunk_size=1000, chunk_overlap=100):
     """
     Chunk legal/rights documents into semantically meaningful pieces with CCH.
@@ -61,7 +61,6 @@ def unified_chunking(text, source="Unknown", lang="en", chunk_size=1000, chunk_o
         })
     return chunks
 
-from load_pdf import load_pdf_directory
 def chunking():
   constitution_data, Right_and_law_data = load_pdf_directory()
   c_chunk = []
@@ -71,7 +70,6 @@ def chunking():
   r_chunk = []
   for doc in Right_and_law_data:
     r_chunk.extend(unified_chunking(doc.page_content, source="Right and law"))
-  print(f"Total constitution chunks: {len(c_chunk)}")
   return c_chunk,r_chunk
 
 if __name__ == "__main__":
